@@ -18,7 +18,8 @@
 
          if( args.Length < 1 )
          {
-            System.Console.WriteLine("Expected at least 1 command line argument");
+            System.Console.WriteLine(
+               "Expected at least 1 command line argument");
             return;
          }
 
@@ -26,11 +27,14 @@
          {
             if (args.Length < 3)
             {
-               System.Console.WriteLine("Expected at least 3 command line arguments");
+               System.Console.WriteLine(
+                  "Expected at least 3 command line arguments");
                return;
             }
 
-            if (args[1].Equals("smtp", System.StringComparison.OrdinalIgnoreCase))
+            if (args[1].Equals(
+               "smtp", 
+               System.StringComparison.OrdinalIgnoreCase))
             {
                key.SetValue("smtp", args[2]);
                System.Console.WriteLine("Done");
@@ -42,7 +46,9 @@
                key.SetValue("port", args[2]);
                System.Console.WriteLine("Done");
             }
-            else if (args[1].Equals("to", System.StringComparison.OrdinalIgnoreCase))
+            else if (args[1].Equals(
+               "to", 
+               System.StringComparison.OrdinalIgnoreCase))
             {
                key.SetValue("to", args[2]);
                System.Console.WriteLine("Done");
@@ -61,7 +67,9 @@
             return;
          }
 
-         else if (args[0].Equals("get", System.StringComparison.OrdinalIgnoreCase))
+         else if (args[0].Equals(
+            "get", 
+            System.StringComparison.OrdinalIgnoreCase))
          {
                if (args.Length < 2)
                {
@@ -70,7 +78,9 @@
                   return;
                }
 
-               if (args[1].Equals("smtp", System.StringComparison.OrdinalIgnoreCase))
+               if (args[1].Equals(
+                  "smtp", 
+                  System.StringComparison.OrdinalIgnoreCase))
                {
                   System.Console.WriteLine(key.GetValue("smtp"));
                }
@@ -99,7 +109,9 @@
                return;
          }
 
-         else if (args[0].Equals("clear", System.StringComparison.OrdinalIgnoreCase))
+         else if (args[0].Equals(
+            "clear", 
+            System.StringComparison.OrdinalIgnoreCase))
          {
             if (args.Length < 2)
             {
@@ -108,7 +120,9 @@
                return;
             }
 
-            if (args[1].Equals("smtp", System.StringComparison.OrdinalIgnoreCase))
+            if (args[1].Equals(
+               "smtp", 
+               System.StringComparison.OrdinalIgnoreCase))
             {
                key.DeleteValue("smtp");
                System.Console.WriteLine("Done");
@@ -217,7 +231,9 @@
 
          if (string.IsNullOrEmpty(subject))
          {
-            System.Console.WriteLine("'Subject: ' not found in file {0}", args[0]);
+            System.Console.WriteLine(
+               "'Subject: ' not found in file {0}", 
+               args[0]);
             return;
          }
 
@@ -246,7 +262,9 @@
          }
          else
          {
-            System.Console.WriteLine("'From: ' not found in file {0}", args[0]);
+            System.Console.WriteLine(
+               "'From: ' not found in file {0}", 
+               args[0]);
             System.Console.WriteLine("and from no set");
             return;
          }
@@ -271,7 +289,12 @@
          m.Send(message);
 
          System.Console.WriteLine(
-            "Send mail via smtp server '{0}', port '{1}', to '{2}', from '{3}' with subject '{4}'",
+            "Send mail\n" + 
+            "   via smtp server '{0}'\n" +
+            "   port '{1}'\n" + 
+            "   to '{2}'\n" +
+            "   from '{3}'\n" +
+            "   with subject '{4}'",
             smtp, port, to, from, subject );
       }
    }
