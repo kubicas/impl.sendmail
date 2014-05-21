@@ -2,6 +2,35 @@
 {
    class sendmail
    {
+      static System.Security.SecureString getPassword()
+      {
+         System.Security.SecureString pwd = new System.Security.SecureString();
+         while (true)
+         {
+            System.ConsoleKeyInfo i = System.Console.ReadKey(true);
+            if (i.Key == System.ConsoleKey.Enter)
+            {
+               System.Console.WriteLine();
+               break;
+            }
+            else if (i.Key == System.ConsoleKey.Backspace)
+            {
+               if (pwd.Length > 0)
+               {
+                  pwd.RemoveAt(pwd.Length - 1);
+                  System.Console.Write("\b \b");
+               }
+            }
+            else
+            {
+               pwd.AppendChar(i.KeyChar);
+               System.Console.Write("*");
+            }
+         }
+         pwd.MakeReadOnly();
+         return pwd;
+      }
+
       static void Main(string[] args)
       {
          Microsoft.Win32.RegistryKey key = 
@@ -9,8 +38,8 @@
                "Software",
                true);
 
-         key.CreateSubKey("SendMail");
-         key = key.OpenSubKey("SendMail", true);
+         key.CreateSubKey("sendmail");
+         key = key.OpenSubKey("sendmail", true);
 
 
          key.CreateSubKey("1");
@@ -60,6 +89,13 @@
                key.SetValue("from", args[2]);
                System.Console.WriteLine("Done");
             }
+            else if (args[1].Equals(
+               "userid",
+               System.StringComparison.OrdinalIgnoreCase))
+            {
+               key.SetValue("userid", args[2]);
+               System.Console.WriteLine("Done");
+            }
             else
             {
                System.Console.WriteLine("Don't know what to set");
@@ -101,6 +137,12 @@
                   System.StringComparison.OrdinalIgnoreCase))
                {
                   System.Console.WriteLine(key.GetValue("from"));
+               }
+               else if (args[1].Equals(
+                  "userid",
+                  System.StringComparison.OrdinalIgnoreCase))
+               {
+                  System.Console.WriteLine(key.GetValue("userid"));
                }
                else
                {
@@ -146,6 +188,13 @@
                System.StringComparison.OrdinalIgnoreCase))
             {
                key.DeleteValue("from");
+               System.Console.WriteLine("Done");
+            }
+            else if (args[1].Equals(
+               "userid",
+               System.StringComparison.OrdinalIgnoreCase))
+            {
+               key.DeleteValue("userid");
                System.Console.WriteLine("Done");
             }
             else
@@ -194,6 +243,13 @@
 
          string from1 = (string)key.GetValue("from");
 
+         string userid = (string)key.GetValue("userid");
+         if (string.IsNullOrEmpty(to))
+         {
+            System.Console.WriteLine("userid not set");
+            return;
+         }
+
          System.IO.StreamReader patch_file;
          try
          {
@@ -219,7 +275,7 @@
             }
             if (line.StartsWith("Subject: "))
             {
-               subject = line.Substring(9);
+               subject = line.Substring(10);
             }
             if (line.StartsWith("From: "))
             {
@@ -237,10 +293,14 @@
             return;
          }
 
-         System.Net.Mail.SmtpClient m;
+         string workingdir = System.IO.Directory.GetCurrentDirectory();
+         workingdir = workingdir.Substring( workingdir.LastIndexOf('\\') + 1);
+         subject = "[" + workingdir + ": " + subject;
+
+         System.Net.Mail.SmtpClient smtpClient;
          try
          {
-            m = new System.Net.Mail.SmtpClient(smtp, port);
+            smtpClient = new System.Net.Mail.SmtpClient(smtp, port);
          }
          catch
          {
@@ -250,6 +310,15 @@
                port );
             return;
          }
+
+         System.Console.WriteLine("Please enter password for user '{0}'", userid);
+         System.Security.SecureString pwd = getPassword();
+
+         System.Net.NetworkCredential basicCredential =
+            new System.Net.NetworkCredential(userid, pwd);
+         smtpClient.UseDefaultCredentials = false;
+         smtpClient.Credentials = basicCredential;
+
 
          string from;
          if (!string.IsNullOrEmpty(from1))
@@ -286,16 +355,19 @@
 
          message.Attachments.Add( patch );
 
-         m.Send(message);
-
          System.Console.WriteLine(
-            "Send mail\n" + 
+            "Sending mail\n" +
             "   via smtp server '{0}'\n" +
-            "   port '{1}'\n" + 
+            "   port '{1}'\n" +
             "   to '{2}'\n" +
             "   from '{3}'\n" +
-            "   with subject '{4}'",
-            smtp, port, to, from, subject );
+            "   with user id '{4}'\n" +
+            "   with subject '{5}'",
+            smtp, port, to, from, userid, subject);
+
+         smtpClient.Send(message);
+
+         System.Console.WriteLine( "Done" );
       }
    }
 }
