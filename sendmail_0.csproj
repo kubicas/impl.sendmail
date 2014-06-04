@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(TGT_DIR)$(Configuration)\</OutputPath>
-    <BaseIntermediateOutputPath>$(INT_DIR)impl\sendmail_0\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>$(INT_DIR)sendmail_0\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(TGT_DIR)</OutputPath>
-    <BaseIntermediateOutputPath>$(INT_DIR)impl\sendmail_0\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>$(INT_DIR)sendmail_0\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
